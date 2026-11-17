@@ -53,6 +53,7 @@
   .pin-num { width:26px; height:26px; border-radius:50%; background:var(--gold); color:#22103F; border:2px solid #22103F; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-weight:700; font-size:12.5px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 7px rgba(0,0,0,.5); }
   .pin-num.closed { background:#8B7AA0; color:#F5F0E6; }
   .pin-you { background:var(--green); color:#08301D; border:2px solid #08301D; font-size:9.5px; font-weight:700; letter-spacing:.5px; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.55); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+  .leaflet-tile-pane { filter: invert(1) hue-rotate(185deg) brightness(0.86) contrast(0.9) saturate(0.5); }
   .leaflet-popup-content-wrapper { background:#241145; color:var(--ink); border:1px solid var(--gold); border-radius:9px; }
   .leaflet-popup-tip { background:#241145; }
   .leaflet-popup-content { margin:11px 13px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:12.5px; line-height:1.5; }
@@ -390,7 +391,7 @@ var today = new Date().getDay();
 var todayName = DAYS[today];
 
 var map = L.map("map", { zoomControl: true, scrollWheelZoom: true });
-L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap &copy; CARTO" }).addTo(map);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(map);
 
 function popupHtml(d) {
   var h = "<b>" + d.n + ". " + d.name + "</b><br>" + d.address + "<br>";
@@ -407,7 +408,7 @@ var markers = {};
 DATA.doors.forEach(function(d){
   var closed = d.hours[todayName] === "Closed";
   var icon = L.divIcon({ className:"", html:"<div class=\"pin-num" + (closed ? " closed" : "") + "\">" + d.n + "</div>", iconSize:[26,26], iconAnchor:[13,13] });
-  var m = L.marker([d.lat, d.lon], { icon:icon }).addTo(map).bindPopup(popupHtml(d));
+  var m = L.marker([d.lat, d.lon], { icon:icon, zIndexOffset: 500 + d.n }).addTo(map).bindPopup(popupHtml(d));
   markers[d.n] = m;
 });
 
