@@ -422,7 +422,12 @@ var walkB = [];
 DATA.doors.slice(8).forEach(function(d){ walkB.push([d.lat,d.lon]); });
 L.polyline(walkB, { color:"#D4AF37", weight:3, dashArray:"7 7", opacity:.9 }).addTo(map);
 
-map.fitBounds(L.latLngBounds([[DATA.start.lat,DATA.start.lon]].concat(DATA.doors.map(function(d){ return [d.lat,d.lon]; }))), { padding:[34,34] });
+var allLL = L.latLngBounds([[DATA.start.lat,DATA.start.lon]].concat(DATA.doors.map(function(d){ return [d.lat,d.lon]; })));
+map.fitBounds(allLL, { padding:[34,34] });
+function refit(){ map.invalidateSize(); map.fitBounds(allLL, { padding:[34,34] }); }
+window.addEventListener("load", function(){ setTimeout(refit, 120); });
+window.addEventListener("resize", function(){ map.invalidateSize(); });
+window.addEventListener("orientationchange", function(){ setTimeout(refit, 250); });
 
 document.getElementById("checked").textContent = DATA.checked;
 document.getElementById("startaddr").textContent = DATA.start.address;
